@@ -1,10 +1,8 @@
-# PortalFetch
-
-[![CircleCI](https://circleci.com/gh/FHDA/PortalFetch.svg?style=svg)](https://circleci.com/gh/FHDA/PortalFetch)  
+# API_deployment
 
 ## Information
 
-This tool/project fetch data from De Anza College / Foothill College portal and save to json file
+This tool/project provide API for FHDA projects
 
 ## Requirements
 
