@@ -14,7 +14,7 @@ from bson.json_util import dumps, loads
 app = Flask(__name__)
 api = Api(app)
 env_config = ConfigParser()
-env_config.read(os.path.dirname(os.path.abspath(__file__))+'\\..\\config\\setting.config')
+env_config.read(os.path.dirname(os.path.abspath(__file__))+'/../config/setting.config')
 mongo_config = env_config['MongoDB']
 
 def get_db():
