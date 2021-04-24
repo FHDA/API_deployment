@@ -97,12 +97,9 @@ Reference:
 2. https://github.com/joelparkerhenderson/git_commit_message#begin-with-a-short-summary-line
 
 ## crawler.config format  
- 
-    [config]    
-    quarter_value  = <quarter_value to be selected>  
-    filename  = <filename>.csv  
-    title  = <title of the csv file>  
-       
-    [campus]  
-    username = <FHDA MyPortal username>
-    password = <FHDA MyPortal password>
+
+    [MongoDB]    
+    Mongo_User = <MongoDB username>
+    Mongo_Password = <MongoDB password>
+    Mongo_DBName = <Name of the desinated DB>
+    Mongo_Postfix = <Postfix provided by DB>
