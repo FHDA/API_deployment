@@ -9,39 +9,36 @@ from bson.json_util import dumps, loads
 parser = reqparse.RequestParser()
 parser.add_argument('year')
 parser.add_argument('quarter')
-parser.add_argument('department')
+parser.add_argument('course_id')
 
-class Department(Resource):
-    def get_by_quarter(self, year, quarter, department):
-        """Get the course with defined course_id from defined quarter.
+class Seat(Resource):
+    def get_by_quarter(self, year, quarter, course_id):
+        """Get the enrollment data with defined course_id from defined quarter.
 
         Args:
             year: the year of the requested quarter
             quarter: the requested quarter
             course_id: the crn of the course requested
         Returns:
-            The course with defined course_id from defined quarter
+            The enrollment data with defined course_id from defined quarter
 
         """
-        print(1)
-        coll = get_quarter_collections(year, quarter, 'departments')
-        courses = coll.find({'deptName': department})
-        try:
-            courses = courses[0]['courses']
-        except:
-            abort_if_department_doesnt_exist(department, courses, year, quarter)
+        coll = get_quarter_collections(year, quarter, "seats")
+        courses = coll.find({"UID": course_id})
+        courses = json.loads(dumps(list(courses)))
         courses = {course['UID']:course for course in courses}
-        return courses
+        abort_if_course_doesnt_exist(course_id, courses, year, quarter)
+        return courses[course_id]
 
     def get(self):
-        """The function that execute when receiving a course get request.
+        """The function that execute when receiving a seat get request.
 
         Args(from request body):
             year: the year of the requested quarter
             quarter: the requested quarter
             course_id: the crn of the course requested
         Returns:
-            The course with defined course_id from defined quarter
+            The enrollment data with defined course_id from defined quarter
 
         """
         request.get_json()
@@ -49,39 +46,40 @@ class Department(Resource):
         try:
             year = int(args['year'])
             quarter = str(args['quarter'])
-            department = str(args['department'])
+            course_id = str(args['course_id'])
         except:
             abort_invalid_input("Invalid Input(400): Please check you input parameters!")
-        if year and quarter!="None" and department!="None":
-            return self.get_by_quarter(year, quarter, department)
+        if year and quarter!="None" and course_id!="None":
+            return self.get_by_quarter(year, quarter, course_id)
         else:
             abort_invalid_input("Invalid Input(400): Please provide all parameters to proceed!")
 
-class DepartmentList(Resource):
+
+class SeatList(Resource):
     def get_by_quarter(self, year, quarter):
-        """Get the list of departments from defined quarter.
+        """Get the dictionary of enrollment data from defined quarter.
 
         Args:
             year: the year of the requested quarter
             quarter: the requested quarter
         Returns:
-            The list of departments from defined quarter
+            The dictionary of enrollment data from defined quarter
 
         """
-        coll = get_quarter_collections(year, quarter, "departments")
-        departments = coll.find()
-        departments = json.loads(dumps(list(departments)))
-        departments = [department["deptName"] for department in departments]
-        return departments
+        coll = get_quarter_collections(year, quarter, "seats")
+        courses = coll.find()
+        courses = json.loads(dumps(list(courses)))
+        courses = {course['UID']:course for course in courses}
+        return courses
 
     def get(self):
-        """The function that execute when receiving a departments get request.
+        """The function that execute when receiving a seats get request.
 
         Args(from request body):
             year: the year of the requested quarter
             quarter: the requested quarter
         Returns:
-            The list of departments from defined quarter
+            The dictionary of courses from defined quarter
 
         """
         request.get_json()

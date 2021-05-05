@@ -60,6 +60,26 @@ def abort_if_course_doesnt_exist(course_id, courses, year=None, quarter=None):
         else:
             abort(404, message="Not Found(404): Course {} doesn't exist".format(course_id))
 
+def abort_if_department_doesnt_exist(department, departments, year=None, quarter=None):
+    """Send error message if department does not exist.
+
+    Send corresponding error message if a requested department does not exist
+
+    Args:
+        department: the name of the department requested
+        departments: the dictionary of departments loaded from db
+        year: the year of the requested quarter
+        quarter: the requested quarter
+    Returns:
+        None
+
+    """
+    if department not in departments:
+        if year and quarter:
+            abort(404, message="Not Found(404): Department {0} doesn't exist in quarter {1} {2}".format(department, year, quarter))
+        else:
+            abort(404, message="Not Found(404): Department {} doesn't exist".format(department))
+
 def abort_invalid_input(err_message):
     """Send an error message 400.
     """
