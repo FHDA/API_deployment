@@ -10,8 +10,8 @@ from flask_restful import reqparse, abort, Api, Resource
 
 app = Flask(__name__)
 api = Api(app)
-api.add_resource(DepartmentList, '/departments')
-api.add_resource(CourseList, '/courses')
+api.add_resource(DepartmentList, '/department_list')
+api.add_resource(CourseList, '/course_list')
 api.add_resource(Course, '/course')
 
 @app.route('/')
