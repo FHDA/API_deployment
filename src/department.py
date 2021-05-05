@@ -23,7 +23,6 @@ class Department(Resource):
             The course with defined course_id from defined quarter
 
         """
-        print(1)
         coll = get_quarter_collections(year, quarter, 'departments')
         courses = coll.find({'deptName': department})
         try:
