@@ -1,10 +1,10 @@
-**Course GET API**
+**```course``` GET API**
 ----
 This GET request takes in a json parameter with 3 variables. The `year`, `quarter`, 'course_id' parameters are required to find a specific course. The server will return the specific course with defined `course_id` in defined quarter and year. Error will be returned if course if not found
 
 * **URL**
 
-  http://fhda-api-test.azurewebsites.net/course
+  https://fhda-api-test.azurewebsites.net/course
 
 * **Method:**
 
@@ -31,7 +31,7 @@ This GET request takes in a json parameter with 3 variables. The `year`, `quarte
 
 * **Example Response:**
   * **Send Request:** 
-    * **url**: http://fhda-api-test.azurewebsites.net/course
+    * **url**: https://fhda-api-test.azurewebsites.net/course
     * **parameter**: `{"year": 2010,"quarter": "Fall","course_id": "00002"}`
   * **Received Response:** 
     ```json
