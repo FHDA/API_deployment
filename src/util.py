@@ -40,6 +40,29 @@ def get_quarter_collections(year, quarter, collection_type):
         abort(404, message="Not Found(404): Database collection entry {} doesn't exist".format(collection_name))
     return coll
 
+def get_contact_collections():
+    """Get the collection from db according to defined quarter and the type of collection requested.
+
+    Args:
+        year: the year of the requested quarter
+        quarter: the requested quarter
+        collection_type: str, either "courses" or "departments"
+    Returns:
+        The collection received from db
+
+    """
+    env_config = ConfigParser()
+    env_config.read(os.path.dirname(os.path.abspath(__file__))+'/../config/setting.config')
+    mongo_config = env_config['MongoDB']
+    username, password = mongo_config['Mongo_User'], mongo_config['Mongo_Password']
+    db_name = mongo_config['Mongo_DBName']
+    client = MongoClient('mongodb+srv://' + username + ':' + password+ mongo_config['Mongo_Postfix'])
+    db = client['contact_forms']
+
+    collection_name = 'contact_test'
+    coll = db.get_collection(collection_name)
+    return coll
+
 def abort_if_course_doesnt_exist(course_id, courses, year=None, quarter=None):
     """Send error message if course does not exist.
 
@@ -79,6 +102,21 @@ def abort_if_department_doesnt_exist(department, departments, year=None, quarter
             abort(404, message="Not Found(404): Department {0} doesn't exist in quarter {1} {2}".format(department, year, quarter))
         else:
             abort(404, message="Not Found(404): Department {} doesn't exist".format(department))
+
+def abort_if_email_doesnt_exist(email, forms):
+    """Send error message if defined email did not send form.
+
+    Send corresponding error message if defined email did not send form
+
+    Args:
+        email: the requested email address
+        forms: the dictionary of form loaded from db
+    Returns:
+        None
+
+    """
+    if email not in forms:
+        abort(404, message="Unable to find email: {}".format(email))
 
 def abort_invalid_input(err_message):
     """Send an error message 400.
