@@ -5,7 +5,7 @@ from configparser import ConfigParser
 from pymongo import MongoClient
 from pymongo import errors as mongoerrors
 
-def get_db():
+def get_db(db_name=None):
     """Get MongoDB username and password from the config file and return the desired database.
 
     Raises:
@@ -18,7 +18,8 @@ def get_db():
     env_config.read(os.path.dirname(os.path.abspath(__file__))+'/../config/setting.config')
     mongo_config = env_config['MongoDB']
     username, password = mongo_config['Mongo_User'], mongo_config['Mongo_Password']
-    db_name = mongo_config['Mongo_DBName']
+    if not db_name:
+        db_name = mongo_config['Mongo_DBName']
     client = MongoClient('mongodb+srv://' + username + ':' + password+ mongo_config['Mongo_Postfix'])
     return client.get_database(db_name)
 
@@ -38,29 +39,6 @@ def get_quarter_collections(year, quarter, collection_type):
     coll = db.get_collection(collection_name)
     if coll.count() == 0:
         abort(404, message="Not Found(404): Database collection entry {} doesn't exist".format(collection_name))
-    return coll
-
-def get_contact_collections():
-    """Get the collection from db according to defined quarter and the type of collection requested.
-
-    Args:
-        year: the year of the requested quarter
-        quarter: the requested quarter
-        collection_type: str, either "courses" or "departments"
-    Returns:
-        The collection received from db
-
-    """
-    env_config = ConfigParser()
-    env_config.read(os.path.dirname(os.path.abspath(__file__))+'/../config/setting.config')
-    mongo_config = env_config['MongoDB']
-    username, password = mongo_config['Mongo_User'], mongo_config['Mongo_Password']
-    db_name = mongo_config['Mongo_DBName']
-    client = MongoClient('mongodb+srv://' + username + ':' + password+ mongo_config['Mongo_Postfix'])
-    db = client['contact_forms']
-
-    collection_name = 'contact_test'
-    coll = db.get_collection(collection_name)
     return coll
 
 def abort_if_course_doesnt_exist(course_id, courses, year=None, quarter=None):

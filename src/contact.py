@@ -24,7 +24,8 @@ class ContactForm(Resource):
             The list of forms sent by this email address
 
         """
-        coll = get_contact_collections()
+        db = get_db('contact_forms')
+        coll = db.get_collection('contact_test')
         forms = list(coll.find({'email': email}))
         if len(forms) == 0:
             abort_if_email_doesnt_exist(email, forms)
@@ -41,7 +42,8 @@ class ContactForm(Resource):
             The list of forms sent by this email address
 
         """
-        coll = get_contact_collections()
+        db = get_db('contact_forms')
+        coll = db.get_collection('contact_test')
         forms = list(coll.find({'_id': oid}))
         if len(forms) == 0:
             abort_not_found("Contact Form Upload Failed!")
@@ -64,7 +66,7 @@ class ContactForm(Resource):
             formBody = str(args['form_body'])
         except:
             abort_invalid_input('Invalid Input(400): Please check you input parameters!')
-        if email!='None':
+        if email != 'None':
             return self.get_by_email(email)
         else:
             abort_invalid_input('Invalid Input(400): Please provide all parameters to proceed!')
@@ -89,10 +91,11 @@ class ContactForm(Resource):
             formBody = str(args['form_body'])
         except:
             abort_invalid_input('Invalid Input(400): Please check you input parameters!')
-        if email!='None' and name!='None' and formBody!='None':
+        if email != 'None' and name != 'None' and formBody != 'None':
             time = str(datetime.now())[:MILLISECOND_ELIMINATOR]
             uploadBody = {'time': time, 'name': name, 'email': email, 'form_body': formBody, 'assigned': False, 'assigned_to': '', 'replied': False}
-            coll = get_contact_collections()
+            db = get_db('contact_forms')
+            coll = db.get_collection('contact_test')
             oid = coll.insert_one(uploadBody).inserted_id
             postCheck = self.get_by_oid(oid)
             del postCheck['_id']
