@@ -5,7 +5,7 @@ from configparser import ConfigParser
 from pymongo import MongoClient
 from pymongo import errors as mongoerrors
 
-def get_db():
+def get_db(db_name=None):
     """Get MongoDB username and password from the config file and return the desired database.
 
     Raises:
@@ -18,7 +18,8 @@ def get_db():
     env_config.read(os.path.dirname(os.path.abspath(__file__))+'/../config/setting.config')
     mongo_config = env_config['MongoDB']
     username, password = mongo_config['Mongo_User'], mongo_config['Mongo_Password']
-    db_name = mongo_config['Mongo_DBName']
+    if not db_name:
+        db_name = mongo_config['Mongo_DBName']
     client = MongoClient('mongodb+srv://' + username + ':' + password+ mongo_config['Mongo_Postfix'])
     return client.get_database(db_name)
 
@@ -79,6 +80,21 @@ def abort_if_department_doesnt_exist(department, departments, year=None, quarter
             abort(404, message="Not Found(404): Department {0} doesn't exist in quarter {1} {2}".format(department, year, quarter))
         else:
             abort(404, message="Not Found(404): Department {} doesn't exist".format(department))
+
+def abort_if_email_doesnt_exist(email, forms):
+    """Send error message if defined email did not send form.
+
+    Send corresponding error message if defined email did not send form
+
+    Args:
+        email: the requested email address
+        forms: the dictionary of form loaded from db
+    Returns:
+        None
+
+    """
+    if email not in forms:
+        abort(404, message="Unable to find email: {}".format(email))
 
 def abort_invalid_input(err_message):
     """Send an error message 400.
