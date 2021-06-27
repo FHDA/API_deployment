@@ -1,10 +1,10 @@
-**```department_list``` GET API**
+**CourseList GET API**
 ----
-This GET request takes in a json parameter with 2 variables. The `year` and `quarter` parameters are required to find a list of departments. The server will return the name of all departments in the defined.
+This GET request takes in a json parameter with 2 variables. The `year` and `quarter` parameters are required to find a list of course. The server will return the name of all departments in the defined.
 
 * **URL**
 
-  https://fhda-api-test.azurewebsites.net/department_list
+  http://fhda-api-test.azurewebsites.net/departments
 
 * **Method:**
 

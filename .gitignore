@@ -297,3 +297,5 @@ package-lock.json
 
 # ----------------- VSCODE----------------- #
 .vscode/*
+
+/config/*
