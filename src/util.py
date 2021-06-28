@@ -5,6 +5,7 @@ from configparser import ConfigParser
 from pymongo import MongoClient
 from pymongo import errors as mongoerrors
 
+
 def get_db(db_name=None):
     """Get MongoDB username and password from the config file and return the desired database.
 
@@ -15,13 +16,16 @@ def get_db(db_name=None):
 
     """
     env_config = ConfigParser()
-    env_config.read(os.path.dirname(os.path.abspath(__file__))+'/../config/setup.cfg')
-    mongo_config = env_config['MongoDB']
-    username, password = mongo_config['Mongo_User'], mongo_config['Mongo_Password']
+    env_config.read(os.path.dirname(os.path.abspath(__file__)) + "/../config/setup.cfg")
+    mongo_config = env_config["MongoDB"]
+    username, password = mongo_config["Mongo_User"], mongo_config["Mongo_Password"]
     if not db_name:
-        db_name = mongo_config['Mongo_DBName']
-    client = MongoClient('mongodb+srv://' + username + ':' + password+ mongo_config['Mongo_Postfix'])
+        db_name = mongo_config["Mongo_DBName"]
+    client = MongoClient(
+        "mongodb+srv://" + username + ":" + password + mongo_config["Mongo_Postfix"]
+    )
     return client.get_database(db_name)
+
 
 def get_quarter_collections(year, quarter, collection_type):
     """Get the collection from db according to defined quarter and the type of collection requested.
@@ -38,8 +42,14 @@ def get_quarter_collections(year, quarter, collection_type):
     collection_name = str(year) + " " + quarter + " De Anza " + collection_type
     coll = db.get_collection(collection_name)
     if coll.count() == 0:
-        abort(404, message="Not Found(404): Database collection entry {} doesn't exist".format(collection_name))
+        abort(
+            404,
+            message="Not Found(404): Database collection entry {} doesn't exist".format(
+                collection_name
+            ),
+        )
     return coll
+
 
 def abort_if_course_doesnt_exist(course_id, courses, year=None, quarter=None):
     """Send error message if course does not exist.
@@ -57,9 +67,17 @@ def abort_if_course_doesnt_exist(course_id, courses, year=None, quarter=None):
     """
     if course_id not in courses:
         if year and quarter:
-            abort(404, message="Not Found(404): Course {0} doesn't exist in quarter {1} {2}".format(course_id, year, quarter))
+            abort(
+                404,
+                message="Not Found(404): Course {0} doesn't exist in quarter {1} {2}".format(
+                    course_id, year, quarter
+                ),
+            )
         else:
-            abort(404, message="Not Found(404): Course {} doesn't exist".format(course_id))
+            abort(
+                404, message="Not Found(404): Course {} doesn't exist".format(course_id)
+            )
+
 
 def abort_if_department_doesnt_exist(department, departments, year=None, quarter=None):
     """Send error message if department does not exist.
@@ -77,9 +95,20 @@ def abort_if_department_doesnt_exist(department, departments, year=None, quarter
     """
     if department not in departments:
         if year and quarter:
-            abort(404, message="Not Found(404): Department {0} doesn't exist in quarter {1} {2}".format(department, year, quarter))
+            abort(
+                404,
+                message="Not Found(404): Department {0} doesn't exist in quarter {1} {2}".format(
+                    department, year, quarter
+                ),
+            )
         else:
-            abort(404, message="Not Found(404): Department {} doesn't exist".format(department))
+            abort(
+                404,
+                message="Not Found(404): Department {} doesn't exist".format(
+                    department
+                ),
+            )
+
 
 def abort_if_email_doesnt_exist(email, forms):
     """Send error message if defined email did not send form.
@@ -96,12 +125,12 @@ def abort_if_email_doesnt_exist(email, forms):
     if email not in forms:
         abort(404, message="Unable to find email: {}".format(email))
 
+
 def abort_invalid_input(err_message):
-    """Send an error message 400.
-    """
+    """Send an error message 400."""
     abort(400, message=err_message)
 
+
 def abort_not_found(err_message):
-    """Send an error message 404.
-    """
+    """Send an error message 404."""
     abort(404, message=err_message)

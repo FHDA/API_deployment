@@ -1,5 +1,6 @@
 import sys, json
-sys.path.append('..')
+
+sys.path.append("..")
 from app import *
 from src.util import *
 from datetime import datetime
@@ -10,9 +11,10 @@ from bson.json_util import dumps, loads
 MILLISECOND_ELIMINATOR = -7
 
 parser = reqparse.RequestParser()
-parser.add_argument('name')
-parser.add_argument('email')
-parser.add_argument('form_body')
+parser.add_argument("name")
+parser.add_argument("email")
+parser.add_argument("form_body")
+
 
 class ContactForm(Resource):
     def get_by_email(self, email):
@@ -24,13 +26,13 @@ class ContactForm(Resource):
             The list of forms sent by this email address
 
         """
-        db = get_db('contact_forms')
-        coll = db.get_collection('contact_test')
-        forms = list(coll.find({'email': email}))
+        db = get_db("contact_forms")
+        coll = db.get_collection("contact_test")
+        forms = list(coll.find({"email": email}))
         if len(forms) == 0:
             abort_if_email_doesnt_exist(email, forms)
         forms = json.loads(dumps(forms))
-        forms = {form['time']:form for form in forms}
+        forms = {form["time"]: form for form in forms}
         return forms
 
     def get_by_oid(self, oid):
@@ -42,9 +44,9 @@ class ContactForm(Resource):
             The list of forms sent by this email address
 
         """
-        db = get_db('contact_forms')
-        coll = db.get_collection('contact_test')
-        forms = list(coll.find({'_id': oid}))
+        db = get_db("contact_forms")
+        coll = db.get_collection("contact_test")
+        forms = list(coll.find({"_id": oid}))
         if len(forms) == 0:
             abort_not_found("Contact Form Upload Failed!")
         return forms[0]
@@ -61,15 +63,19 @@ class ContactForm(Resource):
         request.get_json()
         args = parser.parse_args()
         try:
-            name = str(args['name'])
-            email = str(args['email'])
-            formBody = str(args['form_body'])
+            name = str(args["name"])
+            email = str(args["email"])
+            formBody = str(args["form_body"])
         except:
-            abort_invalid_input('Invalid Input(400): Please check you input parameters!')
-        if email != 'None':
+            abort_invalid_input(
+                "Invalid Input(400): Please check you input parameters!"
+            )
+        if email != "None":
             return self.get_by_email(email)
         else:
-            abort_invalid_input('Invalid Input(400): Please provide all parameters to proceed!')
+            abort_invalid_input(
+                "Invalid Input(400): Please provide all parameters to proceed!"
+            )
 
     def post(self):
         """The function that execute when receiving a contact form post request.
@@ -86,20 +92,32 @@ class ContactForm(Resource):
         args = parser.parse_args()
         print(args)
         try:
-            name = str(args['name'])
-            email = str(args['email'])
-            formBody = str(args['form_body'])
+            name = str(args["name"])
+            email = str(args["email"])
+            formBody = str(args["form_body"])
         except:
-            abort_invalid_input('Invalid Input(400): Please check you input parameters!')
-        if email != 'None' and name != 'None' and formBody != 'None':
+            abort_invalid_input(
+                "Invalid Input(400): Please check you input parameters!"
+            )
+        if email != "None" and name != "None" and formBody != "None":
             time = str(datetime.now())[:MILLISECOND_ELIMINATOR]
-            uploadBody = {'time': time, 'name': name, 'email': email, 'form_body': formBody, 'assigned': False, 'assigned_to': '', 'replied': False}
-            db = get_db('contact_forms')
-            coll = db.get_collection('contact_test')
+            uploadBody = {
+                "time": time,
+                "name": name,
+                "email": email,
+                "form_body": formBody,
+                "assigned": False,
+                "assigned_to": "",
+                "replied": False,
+            }
+            db = get_db("contact_forms")
+            coll = db.get_collection("contact_test")
             oid = coll.insert_one(uploadBody).inserted_id
             postCheck = self.get_by_oid(oid)
-            del postCheck['_id']
+            del postCheck["_id"]
             return postCheck, 201
 
         else:
-            abort_invalid_input('Invalid Input(400): Please provide all parameters to proceed!')
+            abort_invalid_input(
+                "Invalid Input(400): Please provide all parameters to proceed!"
+            )
