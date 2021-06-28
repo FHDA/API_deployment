@@ -3,3 +3,7 @@ flask_restful>=0.3
 flask_cors>=3.0
 Flask == 1.1.2
 okta-jwt-verifier==0.1.0
+flask_testing==0.8.1
+black==21.6b0
+urllib3==1.23
+requests==2.19.0
