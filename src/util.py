@@ -15,7 +15,7 @@ def get_db(db_name=None):
 
     """
     env_config = ConfigParser()
-    env_config.read(os.path.dirname(os.path.abspath(__file__))+'/../config/setting.config')
+    env_config.read(os.path.dirname(os.path.abspath(__file__))+'/../config/setup.cfg')
     mongo_config = env_config['MongoDB']
     username, password = mongo_config['Mongo_User'], mongo_config['Mongo_Password']
     if not db_name:
