@@ -30,5 +30,8 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Live Server Test with pytest
       run: |
+        mkdir config
+        echo [okta] >> config/setup.cfg
         flask run &
         PID=$! && pytest && kill -9 $PID
+        rm -rf config/
