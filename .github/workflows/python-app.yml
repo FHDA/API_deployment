@@ -31,8 +31,15 @@ jobs:
     - name: Live Server Test with pytest
       run: |
         mkdir config 
-        echo [okta] >> config/setup.cfg
-        flask run &
-        PID=$! 
-        pytest --cov=. && kill -9 $PID
+        echo [okta] >> config/setup.cfg 
+        flask run & 
+        flask_pid=$!
+        wait_time=0
+        while ! curl http://127.0.0.1:5000 -m1 -o/dev/null -s ; do
+            sleep 0.1
+            wait_time=$((1+$wait_time))
+            if [ $wait_time -ge 50 ]; then break; fi
+        done
+        pytest --cov=. 
+        kill -9 $flask_pid
         rm -rf config/
