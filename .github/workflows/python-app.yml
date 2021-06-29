@@ -33,5 +33,7 @@ jobs:
         mkdir config
         echo [okta] >> config/setup.cfg
         flask run &
-        PID=$! && pytest && kill -9 $PID
+        PID=$! 
+        pytest 
+        kill -9 $PID
         rm -rf config/
