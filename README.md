@@ -12,6 +12,19 @@ Requirements:
 $ pip install -r requirements.txt
 ```
 
+### `.env` format
+```
+# MongoDB settings
+Mongo_User=<mongo_username>
+Mongo_Password=<mongo_password>
+Mongo_DBName=yifeil_test_03
+Mongo_Postfix=@fhdatimedb-jjsjm.mongodb.net/test?retryWrites=true&w=majority
+
+# Okta settings
+okta_issuer=<okta_issuer_domain>
+okta_client_id=<okta_client_id>
+```
+
 ### Start Server
 ```
 $ flask run
