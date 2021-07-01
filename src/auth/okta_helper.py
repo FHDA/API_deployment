@@ -26,7 +26,7 @@ class OktaHelper:
         """
         self.okta_configs = {
             "issuer": os.environ.get("okta_issuer"),
-            "client_iid": os.environ.get("okta_client_id"),
+            "client_id": os.environ.get("okta_client_id"),
         }
 
     def is_access_token_valid(self, token):
