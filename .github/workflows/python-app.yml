@@ -31,7 +31,7 @@ jobs:
     - name: Live Server Test with pytest
       run: |
         mkdir config 
-        cat tests/test_setup.cfg >> config/setup.cfg 
+        cat tests/test_config/test_setup.cfg >> config/setup.cfg 
         flask run & 
         flask_pid=$!
         wait_time=0
