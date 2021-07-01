@@ -1,7 +1,6 @@
 import os
 from flask import Flask, abort, request, jsonify, render_template
 from flask_restful import reqparse, abort, Api, Resource
-from configparser import ConfigParser
 from pymongo import MongoClient
 from pymongo import errors as mongoerrors
 
@@ -15,9 +14,12 @@ def get_db(db_name=None):
         The database object
 
     """
-    env_config = ConfigParser()
-    env_config.read(os.path.dirname(os.path.abspath(__file__)) + "/../config/setup.cfg")
-    mongo_config = env_config["MongoDB"]
+    mongo_config = {
+        "Mongo_User": os.environ.get("Mongo_User"),
+        "Mongo_Password": os.environ.get("Mongo_Password"),
+        "Mongo_DBName": os.environ.get("Mongo_DBName"),
+        "Mongo_Postfix": os.environ.get("Mongo_Postfix"),
+    }
     username, password = mongo_config["Mongo_User"], mongo_config["Mongo_Password"]
     if not db_name:
         db_name = mongo_config["Mongo_DBName"]

@@ -1,5 +1,4 @@
 from app import *
-from configparser import ConfigParser
 from okta_jwt_verifier import JWTVerifier
 import asyncio
 import os
@@ -25,12 +24,10 @@ class OktaHelper:
 
         Initialize okta config parsing project config file and fetch okta config.
         """
-
-        configs = ConfigParser()
-        configs.read(
-            os.path.dirname(os.path.abspath(__file__)) + "/../../config/setup.cfg"
-        )
-        self.okta_configs = configs["okta"]
+        self.okta_configs = {
+            "issuer": os.environ.get("okta_issuer"),
+            "client_iid": os.environ.get("okta_client_id"),
+        }
 
     def is_access_token_valid(self, token):
         """Check whether an access token is valid.
