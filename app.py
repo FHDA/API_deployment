@@ -3,6 +3,7 @@
 This module gets request from frontend and make corresponding responses
 """
 
+from dotenv import load_dotenv, find_dotenv
 from flask import Flask, abort, request, jsonify, render_template
 from flask_cors import CORS
 from flask_restful import reqparse, abort, Api, Resource
@@ -25,6 +26,9 @@ api.add_resource(Department, "/department")
 api.add_resource(DepartmentList, "/department_list")
 api.add_resource(SeatList, "/seat_list")
 api.add_resource(Seat, "/seat")
+
+# Load envvironmental variables in .env
+load_dotenv(find_dotenv())
 
 # Setup Login Manager
 okta_helper = OktaHelper()
