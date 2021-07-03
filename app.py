@@ -12,6 +12,7 @@ from src.contact import ContactForm
 from src.course import Course, CourseList
 from src.department import Department, DepartmentList
 from src.seat import Seat, SeatList
+from src.miscellaneous import Hashtag
 import flask_restful
 
 app = Flask(__name__)
@@ -26,6 +27,7 @@ api.add_resource(Department, "/department")
 api.add_resource(DepartmentList, "/department_list")
 api.add_resource(SeatList, "/seat_list")
 api.add_resource(Seat, "/seat")
+api.add_resource(Hashtag, "/hashtag")
 
 # Load envvironmental variables in .env
 load_dotenv(find_dotenv())
