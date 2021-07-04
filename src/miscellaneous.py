@@ -41,9 +41,7 @@ class Hashtag(Resource):
         request.get_json()
         args = parser.parse_args()
         if args["display"] and args["tag"]:
-            abort_invalid_input(
-                "Invalid Input(400): Please check you input parameters!"
-            )
+            return generate_response("Please check you input parameters!", 400)
         db = get_db(db_name="miscellaneous")
         coll = db["hashtag"]
         if args["tag"]:
@@ -55,7 +53,11 @@ class Hashtag(Resource):
         res = []
         for tag in cursor:
             res.append({"name": tag["name"], "is_display": tag["is_display"]})
-        return res
+        return (
+            generate_response(res, 200)
+            if res != []
+            else generate_response("Specified tag is not found!", 404)
+        )
 
     def post(self):
         """Adds a tag into hashtag list.
@@ -77,26 +79,22 @@ class Hashtag(Resource):
             else:
                 is_display = int(args["display"])
         except:
-            abort_invalid_input(
-                "Invalid Input(400): Please check you input parameters!"
-            )
+            return generate_response("Please check you iput parameters!", 400)
         db = get_db(db_name="miscellaneous")
         coll = db["hashtag"]
         try:
             insert_tag = {"name": tag, "is_display": is_display}
             if coll.find_one({"name": tag}):
-                abort_invalid_input(
-                    "Invalid Input(400): Cannot insert tag already in DB"
-                )
+                return generate_response("Cannot insert tag already in DB", 400)
             result = coll.update_one(
                 filter={"name": tag}, update={"$set": insert_tag}, upsert=True
             )
         except Exception as e:
-            abort_not_found(str(e))
+            return generate_response(str(e), 400)
         return (
-            str(result.upserted_id)
+            generate_response(str(result.upserted_id), 200)
             if result.upserted_id
-            else "400, Unable to POST to MongoDB"
+            else generate_response("Unable to POST to MongoDB!", 400)
         )
 
     def put(self):
@@ -114,9 +112,7 @@ class Hashtag(Resource):
             tag = str(args["tag"])
             is_display = int(args["display"])
         except:
-            abort_invalid_input(
-                "Invalid Input(400): Please check you input parameters!"
-            )
+            return generate_response("Please check you input parameters!", 400)
         db = get_db(db_name="miscellaneous")
         coll = db["hashtag"]
         try:
@@ -125,13 +121,13 @@ class Hashtag(Resource):
                 filter={"name": tag}, update={"$set": update_tag}, upsert=False
             )
         except Exception as e:
-            abort_not_found(str(e))
+            return generate_response(str(e), 404)
         if result.modified_count > 0:
-            return "200, Successful"
+            return generate_response("Successful", 200)
         elif result.upserted_id != None:
-            return "200, Inserted new tag"
+            return generate_response(result.upserted_id, 201)
         else:
-            return "400, Did not update"
+            return generate_response("Failed to update!", 400)
 
     def delete(self):
         """Deletes a tag from hashtag list.
@@ -146,13 +142,15 @@ class Hashtag(Resource):
         try:
             tag = str(args["tag"])
         except:
-            abort_invalid_input(
-                "Invalid Input(400): Please check you input parameters!"
-            )
+            return generate_response("Please check you input parameters!", 400)
         db = get_db(db_name="miscellaneous")
         coll = db["hashtag"]
         try:
             result = coll.delete_one({"name": tag})
         except Exception as e:
-            abort_not_found(str(e))
-        return "Success" if result.deleted_count == 1 else "Unable to delete!"
+            return generate_response(str(e), 404)
+        return (
+            generate_response("Success", 200)
+            if result.deleted_count == 1
+            else generate_response("Unable to delete!", 404)
+        )
