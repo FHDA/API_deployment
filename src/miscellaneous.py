@@ -16,6 +16,9 @@ class Hashtag(Resource):
     def get(self):
         """Gets the hastag list.
 
+        Args(from request body):
+            tag: tag name
+            display: display status (default 1)
         Returns:
             A list of hashtag details
 
@@ -37,7 +40,6 @@ class Hashtag(Resource):
         """
         request.get_json()
         args = parser.parse_args()
-        print(args)
         if args["display"] and args["tag"]:
             abort_invalid_input(
                 "Invalid Input(400): Please check you input parameters!"
@@ -47,7 +49,7 @@ class Hashtag(Resource):
         if args["tag"]:
             cursor = coll.find({"name": str(args["tag"])})
         elif args["display"]:
-            cursor = coll.find({"is_display": str(args["display"])})
+            cursor = coll.find({"is_display": int(args["display"])})
         else:
             cursor = coll.find()
         res = []
@@ -67,8 +69,10 @@ class Hashtag(Resource):
         request.get_json()
         args = parser.parse_args()
         try:
+            if not args["tag"]:
+                raise Exception("Tag name is not in argument list")
             tag = str(args["tag"])
-            if "display" not in args:
+            if not args["display"]:
                 is_display = 1
             else:
                 is_display = int(args["display"])
