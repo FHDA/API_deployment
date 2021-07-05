@@ -1,5 +1,5 @@
-import os
-from flask import Flask, abort, request, jsonify, render_template
+import os, json
+from flask import Flask, abort, request, jsonify, render_template, make_response
 from flask_restful import reqparse, abort, Api, Resource
 from pymongo import MongoClient
 from pymongo import errors as mongoerrors
@@ -51,6 +51,22 @@ def get_quarter_collections(year, quarter, collection_type):
             ),
         )
     return coll
+
+
+def generate_response(data, code, headers=None):
+    """Makes a Flask response with a JSON encoded body
+
+    Args:
+        data: the data to be responded
+        code: the status code in the response
+        header: the optional header to be responeded
+    Returns:
+        Generated response body in JSON format
+
+    """
+    resp = make_response(json.dumps(data), code)
+    resp.headers.extend(headers or {})
+    return resp
 
 
 def abort_if_course_doesnt_exist(course_id, courses, year=None, quarter=None):
@@ -130,9 +146,9 @@ def abort_if_email_doesnt_exist(email, forms):
 
 def abort_invalid_input(err_message):
     """Send an error message 400."""
-    abort(400, message=err_message)
+    abort(http_status_code=400, message=err_message)
 
 
 def abort_not_found(err_message):
     """Send an error message 404."""
-    abort(404, message=err_message)
+    abort(http_status_code=404, message=err_message)
