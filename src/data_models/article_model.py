@@ -4,6 +4,7 @@ import datetime
 
 class ArticleModel(sql_db.Model):
     __tablename__ = "article"
+
     article_id = sql_db.Column(
         sql_db.Integer,
         unique=True,

@@ -4,6 +4,7 @@ import datetime
 
 class CommentModel(sql_db.Model):
     __tablename__ = "comment"
+
     comment_id = sql_db.Column(
         sql_db.Integer,
         unique=True,

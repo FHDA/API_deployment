@@ -4,6 +4,7 @@ import datetime
 
 class UserArticleInteractionModel(sql_db.Model):
     __tablename__ = "user_article_interaction"
+
     user_article_interaction_id = sql_db.Column(
         sql_db.Integer,
         unique=True,
