@@ -1,5 +1,4 @@
 from app import sql_db
-import datetime
 
 
 class UserArticleInteractionModel(sql_db.Model):
