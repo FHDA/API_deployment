@@ -4,25 +4,36 @@ This API is currently used by the following frontend project:
 - [FHDATime](https://github.com/FHDA/Frontend)
 
 ## Setup and Run
-### Setup
+### Python Setup
 Requirements:
 - Python 3
-- Install All Dependencies
+- Install All Python Dependencies
 ```
 $ pip install -r requirements.txt
 ```
 
-### `.env` format
+### SQL Setup
+#### Local Test
+Setup corresponding SQL database following `/db_setup/setup_sql_db.sql` to test the server in local. 
+
+### `.env` Sample Format
 ```
 # MongoDB settings
 Mongo_User=<mongo_username>
 Mongo_Password=<mongo_password>
-Mongo_DBName=yifeil_test_03
-Mongo_Postfix=@fhdatimedb-jjsjm.mongodb.net/test?retryWrites=true&w=majority
+Mongo_DBName=<mongo_db_name>
+Mongo_Postfix=<mongo_post_fix>
 
 # Okta settings
 okta_issuer=<okta_issuer_domain>
 okta_client_id=<okta_client_id>
+
+# SQL settings
+sql_host=<sql_host>
+sql_port=<sql_port>
+sql_user=<sql_user>
+sql_password=<sql_password>
+sql_db_name=<sql_db_name>
 ```
 
 ### Start Server
