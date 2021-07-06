@@ -7,6 +7,7 @@ from dotenv import load_dotenv, find_dotenv
 from flask import Flask, abort, request, jsonify, render_template
 from flask_cors import CORS
 from flask_restful import reqparse, abort, Api, Resource
+from flask_sqlalchemy import SQLAlchemy
 from src.auth.okta_helper import *
 from src.contact import ContactForm
 from src.course import Course, CourseList
@@ -14,9 +15,27 @@ from src.department import Department, DepartmentList
 from src.seat import Seat, SeatList
 from src.miscellaneous import Hashtag
 import flask_restful
+import os
 
 app = Flask(__name__)
 CORS(app)
+
+# Configure SQL Alchemy
+import pymysql
+
+pymysql.install_as_MySQLdb()
+
+app.config["MYSQL_DATABASE_CHARSET"] = "utf8"
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://{}:{}@{}:{}/{}".format(
+    os.environ.get("sql_user"),
+    os.environ.get("sql_password"),
+    os.environ.get("sql_host"),
+    os.environ.get("sql_port"),
+    os.environ.get("sql_db_name"),
+)
+
+sql_db = SQLAlchemy(app)
 
 # Intialize API Resource
 api = Api(app)
