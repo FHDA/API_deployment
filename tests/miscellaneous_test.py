@@ -8,19 +8,22 @@ import urllib
 from flask import Flask
 from tests.app_test import BaseTest
 
+
 class MiscellaneousTest(BaseTest):
     example_hashtag = {"tag": "pytest_check", "display": 1}
 
     def hashtag_post_test(self):
         try:
             response = requests.post(
-                    self.get_server_url() + "/hashtag", data=self.example_hashtag
-                )
+                self.get_server_url() + "/hashtag", data=self.example_hashtag
+            )
             self.assertEqual(response.status_code, 200)
         except AssertionError as e:
-            requests.delete(self.get_server_url() + "/hashtag", data=self.example_hashtag)
+            requests.delete(
+                self.get_server_url() + "/hashtag", data=self.example_hashtag
+            )
             pytest.fail(str(e))
-        
+
     def hashtag_get_test(self):
         try:
             response = requests.get(
@@ -40,7 +43,9 @@ class MiscellaneousTest(BaseTest):
             )
             self.assertEqual(response.status_code, 404)
         except AssertionError as e:
-            requests.delete(self.get_server_url() + "/hashtag", data=self.example_hashtag)
+            requests.delete(
+                self.get_server_url() + "/hashtag", data=self.example_hashtag
+            )
             pytest.fail(str(e))
 
     def hashtag_put_test(self):
@@ -60,7 +65,9 @@ class MiscellaneousTest(BaseTest):
             self.assertEqual(response_content[0]["name"], self.example_hashtag["tag"])
             self.assertEqual(response_content[0]["is_display"], 0)
         except AssertionError as e:
-            requests.delete(self.get_server_url() + "/hashtag", data=self.example_hashtag)
+            requests.delete(
+                self.get_server_url() + "/hashtag", data=self.example_hashtag
+            )
             pytest.fail(str(e))
 
     def hashtag_delete_test(self):
@@ -74,7 +81,9 @@ class MiscellaneousTest(BaseTest):
             )
             self.assertEqual(response.status_code, 404)
         except AssertionError as e:
-            requests.delete(self.get_server_url() + "/hashtag", data=self.example_hashtag)
+            requests.delete(
+                self.get_server_url() + "/hashtag", data=self.example_hashtag
+            )
             pytest.fail(str(e))
 
     @pytest.mark.skip(reason="Only enable at local or on server, will add config later")

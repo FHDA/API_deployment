@@ -66,14 +66,14 @@ def index():
 # Example 2: require valid access token.
 @app.route("/example_access_token_check")
 @access_token_required
-def example_access_token_check(uid):
+def example_access_token_check():
     return render_template("index.html")
 
 
 # Example 3: require valid ID token.
-@app.route("/example_id_token_check")
+@app.route("/example_id_token_check/<test_param>")
 @id_token_required
-def example_id_token_check(uid):
+def example_id_token_check(okta_id, uid, test_param):
     return render_template("index.html")
 
 
