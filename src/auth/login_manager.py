@@ -41,7 +41,7 @@ def access_token_required(func):
             error_message_or_okta_id,
         ) = okta_helper.is_access_request_authorized(request)
         if is_authorized:
-            return func()
+            return func(*args, **kwargs)
         else:
             return make_response(error_message_or_okta_id, 403)
 
