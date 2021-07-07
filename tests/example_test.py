@@ -18,7 +18,9 @@ class ExampleTest(BaseTest):
         self.assertEqual(response.status_code, 403)
 
     def test_example_id_token_check(self):
-        response = requests.get(self.get_server_url() + "/example_id_token_check")
+        response = requests.get(
+            self.get_server_url() + "/example_id_token_check/random_test_param"
+        )
         self.assertEqual(response.status_code, 403)
 
 
