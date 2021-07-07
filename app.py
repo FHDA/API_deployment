@@ -13,7 +13,7 @@ from src.contact import ContactForm
 from src.course import Course, CourseList
 from src.department import Department, DepartmentList
 from src.seat import Seat, SeatList
-from src.miscellaneous import Hashtag
+from src.story.miscellaneous import Hashtag
 import flask_restful
 import os
 
