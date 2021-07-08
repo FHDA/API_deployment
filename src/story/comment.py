@@ -15,9 +15,10 @@ parser = reqparse.RequestParser()
 parser.add_argument("story_id")
 parser.add_argument("user_id")
 parser.add_argument("comment_id")
+parser.add_argument("is_spam")
 
 
-def get_comments(article_id, user_id, comment_id):
+def get_comments(article_id, user_id, comment_id, is_spam):
     """Get comments filtered by article_id, user_id, comment_id if available.
 
     Send request to SQL database to get comments based on article_id,
@@ -28,6 +29,7 @@ def get_comments(article_id, user_id, comment_id):
         article_id: int, unique article id
         user_id: int, unique user id
         comment_id: int, unique comment id
+        is_spam: int, 1 is spam, 0 is non-spam
     Return:
         A list of comment dictionary.
     """
@@ -38,6 +40,8 @@ def get_comments(article_id, user_id, comment_id):
         args["user_id"] = user_id
     if comment_id:
         args["comment_id"] = comment_id
+    if is_spam:
+        args["is_spam"] = is_spam
     comments = CommentModel.query.filter_by(**args).all()
     return [comment.to_dict() for comment in comments]
 
@@ -51,6 +55,7 @@ class Comment(Resource):
             story_id: int, unique article id
             user_id: int, unique user id
             comment_id: int, unique comment id
+            is_spam: int, whether the comment is spam comment
         Return:
             A list of comment dictionary.
         """
@@ -59,7 +64,10 @@ class Comment(Resource):
         if args["story_id"] is None:
             return generate_response("Error: Story ID not found. ", 400)
         return generate_response(
-            get_comments(args["story_id"], args["user_id"], args["comment_id"]), 200
+            get_comments(
+                args["story_id"], args["user_id"], args["comment_id"], args["is_spam"]
+            ),
+            200,
         )
 
     @id_token_required
@@ -105,6 +113,7 @@ class Comment(Resource):
             user_id: int, unique user id
             comment_id: int, unique comment id
             comment_content: str, the content of comment(in request body)
+            is_spam: int, whether the comment is spam comment
         Return:
             A response specifying whether the comment update is successed.
         """
@@ -117,16 +126,20 @@ class Comment(Resource):
             return generate_response("Error: Invalid Parameters.", 400)
         if args["user_id"] != str(user_id):
             return generate_response("Error: Not Authorized.", 403)
-        try:
-            request_data = json.loads(request.get_data())
-        except:
-            return generate_response("Error: Invalid Request Body.", 400)
-        if "comment_content" not in request_data:
-            return generate_response("Error: Comment can not be empty.", 400)
         comment = CommentModel.query.filter_by(
             article_id=args["story_id"], user_id=user_id, comment_id=args["comment_id"]
         ).first()
-        comment.comment_content = request_data["comment_content"]
+        try:
+            request_data = json.loads(request.get_data())
+            if "comment_content" in request_data:
+                comment.comment_content = request_data["comment_content"]
+        except:
+            pass
+        if args["is_spam"]:
+            if args["is_spam"] == "1":
+                comment.is_spam = True
+            elif args["is_spam"] == "0":
+                comment.is_spam = False
         sql_db.session.commit()
         return generate_response("Success: Comment Content Updated. ", 200)
 
