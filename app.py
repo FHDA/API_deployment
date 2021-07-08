@@ -45,6 +45,7 @@ from src.contact import ContactForm
 from src.course import Course, CourseList
 from src.department import Department, DepartmentList
 from src.seat import Seat, SeatList
+from src.story.article import Article
 from src.story.miscellaneous import Hashtag
 from src.story.comment import Comment
 
@@ -59,6 +60,7 @@ api.add_resource(DepartmentList, "/department_list")
 api.add_resource(SeatList, "/seat_list")
 api.add_resource(Seat, "/seat")
 # Story APIs
+api.add_resource(Article, "/story")
 api.add_resource(Hashtag, "/story/hashtag")
 api.add_resource(Comment, "/story/comment")
 
