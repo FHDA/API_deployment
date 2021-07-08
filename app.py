@@ -48,6 +48,7 @@ from src.seat import Seat, SeatList
 from src.story.article import Article
 from src.story.miscellaneous import Hashtag
 from src.story.comment import Comment
+from src.auth.user import User
 
 api = Api(app)
 # Contact APIs
@@ -63,6 +64,8 @@ api.add_resource(Seat, "/seat")
 api.add_resource(Article, "/story")
 api.add_resource(Hashtag, "/story/hashtag")
 api.add_resource(Comment, "/story/comment")
+# User APIs
+api.add_resource(User, "/user")
 
 # Some examples of using okta authorization login manager.
 # Example 1: no login is needed.
