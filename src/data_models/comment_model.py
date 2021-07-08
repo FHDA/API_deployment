@@ -21,6 +21,12 @@ class CommentModel(sql_db.Model):
     is_spam = sql_db.Column(sql_db.Boolean, default=False, nullable=False)
 
     def to_dict(self):
+        """Convert current comment to dictionary format.
+
+        Returns:
+            A dictionary that includes all columns and its values of
+            a comment in the `comment` table.
+        """
         return {
             "comment_id": self.comment_id,
             "comment_content": self.comment_content,
