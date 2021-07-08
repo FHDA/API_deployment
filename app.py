@@ -8,17 +8,14 @@ from flask import Flask, abort, request, jsonify, render_template
 from flask_cors import CORS
 from flask_restful import reqparse, abort, Api, Resource
 from flask_sqlalchemy import SQLAlchemy
-from src.auth.okta_helper import *
-from src.contact import ContactForm
-from src.course import Course, CourseList
-from src.department import Department, DepartmentList
-from src.seat import Seat, SeatList
-from src.miscellaneous import Hashtag
 import flask_restful
 import os
 
 app = Flask(__name__)
 CORS(app)
+
+# Load envvironmental variables in .env
+load_dotenv(find_dotenv())
 
 # Configure SQL Alchemy
 import pymysql
@@ -37,24 +34,33 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://{}:{}@{}:{}/{}".format(
 
 sql_db = SQLAlchemy(app)
 
+# Setup Login Manager
+from src.auth.okta_helper import OktaHelper
+
+okta_helper = OktaHelper()
+from src.auth.login_manager import access_token_required, id_token_required
+
 # Intialize API Resource
+from src.contact import ContactForm
+from src.course import Course, CourseList
+from src.department import Department, DepartmentList
+from src.seat import Seat, SeatList
+from src.story.miscellaneous import Hashtag
+from src.story.comment import Comment
+
 api = Api(app)
+# Contact APIs
 api.add_resource(ContactForm, "/contact")
+# Course APIs
 api.add_resource(Course, "/course")
 api.add_resource(CourseList, "/course_list")
 api.add_resource(Department, "/department")
 api.add_resource(DepartmentList, "/department_list")
 api.add_resource(SeatList, "/seat_list")
 api.add_resource(Seat, "/seat")
-api.add_resource(Hashtag, "/hashtag")
-
-# Load envvironmental variables in .env
-load_dotenv(find_dotenv())
-
-# Setup Login Manager
-okta_helper = OktaHelper()
-from src.auth.login_manager import access_token_required, id_token_required
-
+# Story APIs
+api.add_resource(Hashtag, "/story/hashtag")
+api.add_resource(Comment, "/story/comment")
 
 # Some examples of using okta authorization login manager.
 # Example 1: no login is needed.
@@ -66,14 +72,14 @@ def index():
 # Example 2: require valid access token.
 @app.route("/example_access_token_check")
 @access_token_required
-def example_access_token_check(uid):
+def example_access_token_check():
     return render_template("index.html")
 
 
 # Example 3: require valid ID token.
-@app.route("/example_id_token_check")
+@app.route("/example_id_token_check/<test_param>")
 @id_token_required
-def example_id_token_check(uid):
+def example_id_token_check(okta_id, uid, test_param):
     return render_template("index.html")
 
 
