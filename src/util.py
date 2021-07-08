@@ -1,4 +1,5 @@
 import os, json
+from bson import json_util
 from flask import Flask, abort, request, jsonify, render_template, make_response
 from flask_restful import reqparse, abort, Api, Resource
 from pymongo import MongoClient
@@ -64,7 +65,7 @@ def generate_response(data, code, headers=None):
         Generated response body in JSON format
 
     """
-    resp = make_response(json.dumps(data), code)
+    resp = make_response(json.dumps(data, default=json_util.default), code)
     resp.headers.extend(headers or {})
     return resp
 
