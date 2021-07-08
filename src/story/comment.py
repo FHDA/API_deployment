@@ -75,10 +75,13 @@ class Comment(Resource):
         """
         args = parser.parse_args()
         if args["story_id"] is None or args["user_id"] is None:
-            return generate_response("Error: Invalid parameters.", 400)
+            return generate_response("Error: Invalid Parameters.", 400)
         if args["user_id"] != str(user_id):
             return generate_response("Error: Not Authorized.", 403)
-        request_data = json.loads(request.get_data())
+        try:
+            request_data = json.loads(request.get_data())
+        except:
+            return generate_response("Error: Invalid Request Body.", 400)
         if "comment_content" not in request_data:
             return generate_response("Error: Comment can not be empty.", 400)
         new_comment = CommentModel(
@@ -114,7 +117,10 @@ class Comment(Resource):
             return generate_response("Error: Invalid Parameters.", 400)
         if args["user_id"] != str(user_id):
             return generate_response("Error: Not Authorized.", 403)
-        request_data = json.loads(request.get_data())
+        try:
+            request_data = json.loads(request.get_data())
+        except:
+            return generate_response("Error: Invalid Request Body.", 400)
         if "comment_content" not in request_data:
             return generate_response("Error: Comment can not be empty.", 400)
         comment = CommentModel.query.filter_by(
