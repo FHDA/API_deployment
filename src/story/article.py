@@ -50,9 +50,7 @@ class Article(Resource):
         """
         request.get_json()
         args = parser.parse_args()
-        return generate_response(
-            get_articles(args["user_id"], args["story_id"]), 200
-        )
+        return generate_response(get_articles(args["user_id"], args["story_id"]), 200)
 
     @id_token_required
     def post(okta_id, user_id, self):
@@ -100,7 +98,7 @@ class Article(Resource):
                 graduate_year=int(request_data.get("graduate_year", 0)),
                 degree_type=int(request_data.get("degree_type", 0)),
                 is_spam=False,
-                is_approved=False
+                is_approved=False,
             )
         except:
             return generate_response("Error: Invalid Parameters.", 400)
@@ -120,10 +118,7 @@ class Article(Resource):
             A response specifying whether the article update is successed.
         """
         args = parser.parse_args()
-        if (
-            args["story_id"] is None
-            or args["user_id"] is None
-        ):
+        if args["story_id"] is None or args["user_id"] is None:
             return generate_response("Error: Invalid Parameters.", 400)
         if args["user_id"] != str(user_id):
             return generate_response("Error: Not Authorized.", 403)
@@ -151,10 +146,7 @@ class Article(Resource):
             A response specifying whether the article deletion is successed.
         """
         args = parser.parse_args()
-        if (
-            args["story_id"] is None
-            or args["user_id"] is None
-        ):
+        if args["story_id"] is None or args["user_id"] is None:
             return generate_response("Error: Invalid Parameters.", 400)
         if args["user_id"] != str(user_id):
             return generate_response("Error: Not Authorized.", 403)
