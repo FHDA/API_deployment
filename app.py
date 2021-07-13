@@ -38,7 +38,11 @@ sql_db = SQLAlchemy(app)
 from src.auth.okta_helper import OktaHelper
 
 okta_helper = OktaHelper()
-from src.auth.login_manager import access_token_required, id_token_required
+from src.auth.login_manager import (
+    user_login_required,
+    admin_login_required,
+    superadmin_login_required,
+)
 
 # Intialize API Resource
 from src.contact import ContactForm
@@ -74,17 +78,24 @@ def index():
     return render_template("index.html")
 
 
-# Example 2: require valid access token.
-@app.route("/example_access_token_check")
-@access_token_required
-def example_access_token_check():
+# Example 2: require user login.
+@app.route("/example_user_check/<test_param>")
+@user_login_required
+def example_user_check(okta_id, uid, test_param):
     return render_template("index.html")
 
 
-# Example 3: require valid ID token.
-@app.route("/example_id_token_check/<test_param>")
-@id_token_required
-def example_id_token_check(okta_id, uid, test_param):
+# Example 3: require admin login
+@app.route("/example_admin_check/<test_param>")
+@admin_login_required
+def example_admin_check(okta_id, uid, test_param):
+    return render_template("index.html")
+
+
+# Example 4: require superadmin login
+@app.route("/example_superadmin_check/<test_param>")
+@superadmin_login_required
+def example_superadmin_check(okta_id, uid, test_param):
     return render_template("index.html")
 
 

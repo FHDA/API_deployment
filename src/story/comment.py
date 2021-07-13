@@ -7,7 +7,7 @@ from app import sql_db
 from datetime import datetime
 from flask import request
 from flask_restful import reqparse, abort, Api, Resource
-from src.auth.login_manager import access_token_required, id_token_required
+from src.auth.login_manager import user_login_required
 from src.util import generate_response
 from src.data_models.comment_model import CommentModel
 
@@ -47,7 +47,7 @@ def get_comments(article_id, user_id, comment_id, is_spam):
 
 
 class Comment(Resource):
-    @access_token_required
+    @user_login_required
     def get(self):
         """Get comments from SQL database.
 
@@ -70,7 +70,7 @@ class Comment(Resource):
             200,
         )
 
-    @id_token_required
+    @user_login_required
     def post(okta_id, user_id, self):
         """Create a new comment post.
 
@@ -104,7 +104,7 @@ class Comment(Resource):
         sql_db.session.commit()
         return generate_response("Success: Comment Created. ", 200)
 
-    @id_token_required
+    @user_login_required
     def put(okta_id, user_id, self):
         """Update the content of a current comment post.
 
@@ -143,7 +143,7 @@ class Comment(Resource):
         sql_db.session.commit()
         return generate_response("Success: Comment Content Updated. ", 200)
 
-    @id_token_required
+    @user_login_required
     def delete(okta_id, user_id, self):
         """Delete a comment.
 
