@@ -5,6 +5,7 @@ import unittest
 from src.data_models.enum_tables.degree_type import *
 from src.data_models.enum_tables.major import *
 from src.data_models.enum_tables.school import *
+from src.data_models.enum_tables.role import *
 
 
 class DataModelsEnumTest(unittest.TestCase):
@@ -24,6 +25,11 @@ class DataModelsEnumTest(unittest.TestCase):
         self.assertEqual(
             from_code_to_school_name(9), "University of California, San Francisco"
         )
+
+    def test_role(self):
+        self.assertEqual(from_code_to_role_name(0), "UNKNOWN_OR_USER")
+        self.assertEqual(from_code_to_role_name(7958245), "UNKNOWN_OR_USER")
+        self.assertEqual(from_code_to_role_name(2), "SuperAdmin")
 
 
 if __name__ == "__main__":

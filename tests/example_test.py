@@ -13,13 +13,25 @@ class ExampleTest(BaseTest):
         app.config["LIVESERVER_TIMEOUT"] = 3
         return app
 
-    def test_example_access_token_check(self):
-        response = requests.get(self.get_server_url() + "/example_access_token_check")
+    def test_example_no_login_needed(self):
+        response = requests.get(self.get_server_url())
+        self.assertEqual(response.status_code, 200)
+
+    def test_example_user_check(self):
+        response = requests.get(
+            self.get_server_url() + "/example_user_check/random_test_param"
+        )
         self.assertEqual(response.status_code, 403)
 
-    def test_example_id_token_check(self):
+    def test_example_admin_check(self):
         response = requests.get(
-            self.get_server_url() + "/example_id_token_check/random_test_param"
+            self.get_server_url() + "/example_admin_check/random_test_param"
+        )
+        self.assertEqual(response.status_code, 403)
+
+    def test_example_superadmin_check(self):
+        response = requests.get(
+            self.get_server_url() + "/example_superadmin_check/random_test_param"
         )
         self.assertEqual(response.status_code, 403)
 

@@ -7,7 +7,7 @@ from app import sql_db
 from datetime import datetime
 from flask import request
 from flask_restful import reqparse, abort, Api, Resource
-from src.auth.login_manager import access_token_required, id_token_required
+from src.auth.login_manager import user_login_required
 from src.util import generate_response
 from src.data_models.article_model import ArticleModel
 
@@ -38,7 +38,7 @@ def get_articles(user_id, article_id=None):
 
 
 class Article(Resource):
-    @access_token_required
+    @user_login_required
     def get(self):
         """Get story articles from SQL database.
 
@@ -52,7 +52,7 @@ class Article(Resource):
         args = parser.parse_args()
         return generate_response(get_articles(args["user_id"], args["story_id"]), 200)
 
-    @id_token_required
+    @user_login_required
     def post(okta_id, user_id, self):
         """Create a new Article post.
 
@@ -106,7 +106,7 @@ class Article(Resource):
         sql_db.session.commit()
         return generate_response("Success: Article Created. ", 200)
 
-    @id_token_required
+    @user_login_required
     def put(okta_id, user_id, self):
         """Update the content of a current article post.
 
@@ -135,7 +135,7 @@ class Article(Resource):
         sql_db.session.commit()
         return generate_response("Success: Article Content Updated. ", 200)
 
-    @id_token_required
+    @user_login_required
     def delete(okta_id, user_id, self):
         """Delete an article.
 
