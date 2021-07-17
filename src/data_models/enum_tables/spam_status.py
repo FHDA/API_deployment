@@ -1,5 +1,5 @@
 # A mapping from spam status code to spam status
-ROLE = {
+SPAM_STATUS = {
     0: "UNKNOWN",
     1: "PendingSpam",
     2: "ConfirmedSpam",
@@ -15,6 +15,6 @@ def from_code_to_spam_status(spam_status_code):
     Returns:
         str, the name of spam status
     """
-    if spam_status_code not in ROLE:
+    if spam_status_code not in SPAM_STATUS:
         return "UNKNOWN"
-    return ROLE[spam_status_code]
+    return SPAM_STATUS[spam_status_code]
