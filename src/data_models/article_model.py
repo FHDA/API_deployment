@@ -67,7 +67,7 @@ class ArticleModel(sql_db.Model):
             },
             "is_spam": {
                 "spam_status_code": self.is_spam,
-                "name": from_code_to_spam_status(self.is_spams),
+                "name": from_code_to_spam_status(self.is_spam),
             },
             "is_approved": self.is_approved,
         }

@@ -37,6 +37,6 @@ class CommentModel(sql_db.Model):
             "like_count": self.like_count,
             "is_spam": {
                 "spam_status_code": self.is_spam,
-                "name": from_code_to_spam_status(self.is_spams),
+                "name": from_code_to_spam_status(self.is_spam),
             },
         }
