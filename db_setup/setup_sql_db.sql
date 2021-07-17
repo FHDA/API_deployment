@@ -25,7 +25,7 @@ CREATE TABLE `TRANSFER_ME`.`article` (
   `major` INT ZEROFILL NULL,
   `graduate_year` INT ZEROFILL NULL,
   `degree_type` INT ZEROFILL NULL,
-  `is_spam` TINYINT ZEROFILL NULL,
+  `is_spam` INT ZEROFILL NULL,
   `is_approved` TINYINT ZEROFILL NULL,
   PRIMARY KEY (`article_id`),
   UNIQUE INDEX `article_id_UNIQUE` (`article_id` ASC));
