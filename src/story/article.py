@@ -12,52 +12,50 @@ from src.util import generate_response
 from src.data_models.article_model import ArticleModel
 
 parser = reqparse.RequestParser()
-parser.add_argument("story_id")
+parser.add_argument("article_id")
 parser.add_argument("user_id")
 
 
-def get_articles(user_id, article_id=None):
+def get_articles(filter):
     """Get articles filtered by article_id, user_id if available.
 
     Send request to SQL database to get articles based on article_id,
-    user_id. If no article_id is parsed, we return all articles
+    user_id and other filtering keys. If no article_id is parsed, we return all articles
 
     Args:
-        article_id: int, unique article id
-        user_id: int, unique user id
+        filter: dict, defining filtering scheme
     Return:
         A list of article dictionary.
     """
-    args = {}
-    if article_id:
-        args["article_id"] = article_id
-    if user_id:
-        args["user_id"] = user_id
-    articles = ArticleModel.query.filter_by(**args).all()
+    column_keys = ArticleModel.__table__.columns.keys()
+    for filter_key in filter.keys():
+        if filter_key not in column_keys:
+            del filter[filter_key]
+    articles = ArticleModel.query.filter_by(**filter).all()
     return [article.to_dict() for article in articles]
 
 
 class Article(Resource):
     @user_login_required
-    def get(self):
+    def get(self, okta_id, user_id):
         """Get story articles from SQL database.
 
         Args from request:
-            story_id: int, unique article id
+            article_id: int, unique article id
             user_id: int, unique user id
         Return:
             A list of article dictionary.
         """
-        request.get_json()
-        args = parser.parse_args()
-        return generate_response(get_articles(args["user_id"], args["story_id"]), 200)
+        request_data = request.get_data()
+        request_data = json.loads(request_data) if request_data else {}
+        return generate_response(get_articles(request_data), 200)
 
     @user_login_required
     def post(okta_id, user_id, self):
         """Create a new Article post.
 
         Args from request:
-            story_id: int, unique article id
+            article_id: int, unique article id
             user_id: int, unique user id
             article_title: str, the title of the article(in request body)
             article_content: str, the content of article(in request body)
@@ -111,14 +109,14 @@ class Article(Resource):
         """Update the content of a current article post.
 
         Args from request:
-            story_id: int, unique article id
+            article_id: int, unique article id
             user_id: int, unique user id
             article_content: str, the content of article(in request body)
         Return:
             A response specifying whether the article update is successed.
         """
         args = parser.parse_args()
-        if args["story_id"] is None or args["user_id"] is None:
+        if args["article_id"] is None or args["user_id"] is None:
             return generate_response("Error: Invalid Parameters.", 400)
         if args["user_id"] != str(user_id):
             return generate_response("Error: Not Authorized.", 403)
@@ -129,7 +127,7 @@ class Article(Resource):
         if "article_content" not in request_data:
             return generate_response("Error: Article can not be empty.", 400)
         article = ArticleModel.query.filter_by(
-            article_id=args["story_id"], user_id=user_id
+            article_id=args["article_id"], user_id=user_id
         ).first()
         article.article_content = request_data["article_content"]
         sql_db.session.commit()
@@ -140,18 +138,18 @@ class Article(Resource):
         """Delete an article.
 
         Args from request:
-            story_id: int, unique article id
+            article_id: int, unique article id
             user_id: int, unique user id
         Return:
             A response specifying whether the article deletion is successed.
         """
         args = parser.parse_args()
-        if args["story_id"] is None or args["user_id"] is None:
+        if args["article_id"] is None or args["user_id"] is None:
             return generate_response("Error: Invalid Parameters.", 400)
         if args["user_id"] != str(user_id):
             return generate_response("Error: Not Authorized.", 403)
         article = ArticleModel.query.filter_by(
-            article_id=args["story_id"], user_id=user_id
+            article_id=args["article_id"], user_id=user_id
         ).first()
         sql_db.session.delete(article)
         sql_db.session.commit()
