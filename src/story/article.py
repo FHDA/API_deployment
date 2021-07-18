@@ -30,7 +30,7 @@ def get_articles(filter):
     column_keys = ArticleModel.__table__.columns.keys()
     for filter_key in filter.keys():
         if filter_key not in column_keys:
-            del filter[filter_key]
+            return []
     articles = ArticleModel.query.filter_by(**filter).all()
     return [article.to_dict() for article in articles]
 
