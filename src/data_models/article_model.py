@@ -2,6 +2,7 @@ from app import sql_db
 from src.data_models.enum_tables.degree_type import from_code_to_degree_type_name
 from src.data_models.enum_tables.school import from_code_to_school_name
 from src.data_models.enum_tables.major import from_code_to_major_name
+from src.data_models.enum_tables.spam_status import from_code_to_spam_status
 import datetime
 
 
@@ -28,7 +29,7 @@ class ArticleModel(sql_db.Model):
     major = sql_db.Column(sql_db.Integer)
     graduate_year = sql_db.Column(sql_db.Integer)
     degree_type = sql_db.Column(sql_db.Integer)
-    is_spam = sql_db.Column(sql_db.Boolean, default=False, nullable=False)
+    is_spam = sql_db.Column(sql_db.Integer, nullable=False)
     is_approved = sql_db.Column(sql_db.Boolean, default=False, nullable=False)
 
     def to_dict(self):
@@ -64,6 +65,9 @@ class ArticleModel(sql_db.Model):
                 "degree_type_code": self.degree_type,
                 "name": from_code_to_degree_type_name(self.degree_type),
             },
-            "is_spam": self.is_spam,
+            "is_spam": {
+                "spam_status_code": self.is_spam,
+                "name": from_code_to_spam_status(self.is_spam),
+            },
             "is_approved": self.is_approved,
         }

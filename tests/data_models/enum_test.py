@@ -6,6 +6,7 @@ from src.data_models.enum_tables.degree_type import *
 from src.data_models.enum_tables.major import *
 from src.data_models.enum_tables.school import *
 from src.data_models.enum_tables.role import *
+from src.data_models.enum_tables.spam_status import *
 
 
 class DataModelsEnumTest(unittest.TestCase):
@@ -30,6 +31,11 @@ class DataModelsEnumTest(unittest.TestCase):
         self.assertEqual(from_code_to_role_name(0), "UNKNOWN_OR_USER")
         self.assertEqual(from_code_to_role_name(7958245), "UNKNOWN_OR_USER")
         self.assertEqual(from_code_to_role_name(2), "SuperAdmin")
+
+    def test_spam(self):
+        self.assertEqual(from_code_to_spam_status(0), "UNKNOWN")
+        self.assertEqual(from_code_to_spam_status(7958245), "UNKNOWN")
+        self.assertEqual(from_code_to_spam_status(2), "ConfirmedSpam")
 
 
 if __name__ == "__main__":

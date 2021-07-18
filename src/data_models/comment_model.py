@@ -1,4 +1,5 @@
 from app import sql_db
+from src.data_models.enum_tables.spam_status import from_code_to_spam_status
 import datetime
 
 
@@ -18,7 +19,7 @@ class CommentModel(sql_db.Model):
     article_id = sql_db.Column(sql_db.Integer, nullable=False)
     post_time = sql_db.Column(sql_db.DateTime, nullable=False)
     like_count = sql_db.Column(sql_db.Integer, nullable=False)
-    is_spam = sql_db.Column(sql_db.Boolean, default=False, nullable=False)
+    is_spam = sql_db.Column(sql_db.Integer, nullable=False)
 
     def to_dict(self):
         """Convert current comment to dictionary format.
@@ -34,5 +35,8 @@ class CommentModel(sql_db.Model):
             "article_id": self.article_id,
             "post_time": str(self.post_time),
             "like_count": self.like_count,
-            "is_spam": self.is_spam,
+            "is_spam": {
+                "spam_status_code": self.is_spam,
+                "name": from_code_to_spam_status(self.is_spam),
+            },
         }

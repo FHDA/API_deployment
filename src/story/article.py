@@ -97,7 +97,7 @@ class Article(Resource):
                 major=int(request_data.get("major", 0)),
                 graduate_year=int(request_data.get("graduate_year", 0)),
                 degree_type=int(request_data.get("degree_type", 0)),
-                is_spam=False,
+                is_spam=0,
                 is_approved=False,
             )
         except:

@@ -29,7 +29,7 @@ def get_comments(article_id, user_id, comment_id, is_spam):
         article_id: int, unique article id
         user_id: int, unique user id
         comment_id: int, unique comment id
-        is_spam: int, 1 is spam, 0 is non-spam
+        is_spam: int, spam status code
     Return:
         A list of comment dictionary.
     """
@@ -55,7 +55,7 @@ class Comment(Resource):
             story_id: int, unique article id
             user_id: int, unique user id
             comment_id: int, unique comment id
-            is_spam: int, whether the comment is spam comment
+            is_spam: int, spam status code
         Return:
             A list of comment dictionary.
         """
@@ -98,7 +98,7 @@ class Comment(Resource):
             article_id=args["story_id"],
             post_time=datetime.now(),
             like_count=0,
-            is_spam=False,
+            is_spam=0,
         )
         sql_db.session.add(new_comment)
         sql_db.session.commit()
@@ -113,7 +113,7 @@ class Comment(Resource):
             user_id: int, unique user id
             comment_id: int, unique comment id
             comment_content: str, the content of comment(in request body)
-            is_spam: int, whether the comment is spam comment
+            is_spam: int, spam status code
         Return:
             A response specifying whether the comment update is successed.
         """
@@ -136,10 +136,10 @@ class Comment(Resource):
         except:
             pass
         if args["is_spam"]:
-            if args["is_spam"] == "1":
-                comment.is_spam = True
-            elif args["is_spam"] == "0":
-                comment.is_spam = False
+            try:
+                comment.is_spam = int(args["is_spam"])
+            except:
+                generate_response("Invalid spam status code", 400)
         sql_db.session.commit()
         return generate_response("Success: Comment Content Updated. ", 200)
 
