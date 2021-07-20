@@ -46,9 +46,8 @@ class Article(Resource):
         Return:
             A list of article dictionary.
         """
-        request_data = request.get_data()
-        request_data = json.loads(request_data) if request_data else {}
-        return generate_response(get_articles(request_data), 200)
+        request_params = request.args
+        return generate_response(get_articles(request_params), 200)
 
     @user_login_required
     def post(okta_id, user_id, self):
