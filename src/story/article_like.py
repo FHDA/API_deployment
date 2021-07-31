@@ -18,7 +18,7 @@ parser.add_argument("user_id")
 parser.add_argument("like_count")
 
 
-class Like(Resource):
+class Article_Like(Resource):
     @user_login_required
     def put(self, okta_id, user_id):
         """
