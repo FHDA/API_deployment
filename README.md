@@ -38,7 +38,7 @@ sql_db_name=<sql_db_name>
 
 ### Start Server
 ```
-$ flask run
+$ python -m flask run
 ```
 
 ### Run Tests
