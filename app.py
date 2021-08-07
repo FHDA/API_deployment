@@ -54,6 +54,7 @@ from src.story.miscellaneous import Hashtag
 from src.story.comment import Comment
 from src.auth.user import User
 from src.story.article_like import Article_Like
+from src.story.comment_like import Comment_Like
 
 api = Api(app)
 # Contact APIs
@@ -70,6 +71,7 @@ api.add_resource(Article, "/story")
 api.add_resource(Hashtag, "/story/hashtag")
 api.add_resource(Comment, "/story/comment")
 api.add_resource(Article_Like, "/story/article_like")
+api.add_resource(Comment_Like, "/story/comment_like")
 # User APIs
 api.add_resource(User, "/user")
 
