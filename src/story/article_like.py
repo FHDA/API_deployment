@@ -22,16 +22,15 @@ class Article_Like(Resource):
     @user_login_required
     def put(self, okta_id, user_id):
         """
-        Update the count of likes.
+        Update the count of likes for article.
         Update the like count depends on if user liked the article before or not
         If the like (boolean) is True, then decrease the like count and return the like to False.
 
         Args from request:
             article_id: int, unique article id
             user_id: int, unique user id
-            article_content: str, the content of article(in request body)
         Return:
-            A response specifying whether the like count update is successful or not.
+            A response specifying whether the article's like count update is successful or not.
         """
         args = parser.parse_args()
         
@@ -40,11 +39,6 @@ class Article_Like(Resource):
 
         if args["user_id"] != str(user_id):
             return generate_response("Error: Not Authorized.", 403)
-
-        try:
-            request_data = json.loads(request.get_data())
-        except:
-            return generate_response("Error: Invalid Request Body.", 400)
 
         # update its like_count
         article = ArticleModel.query.filter_by(
@@ -55,12 +49,13 @@ class Article_Like(Resource):
             user_id = user_id, article_id = args["article_id"]
         ).first()
 
-        if user_art_inter.like:
-            user_art_inter.like = False
-            article.like_count = article.like_count - 1
-        else: 
-            user_art_inter.like = True
-            article.like_count = article.like_count + 1
+        if user_art_inter.mark_spam != True:
+            if user_art_inter.like:
+                user_art_inter.like = False
+                article.like_count = article.like_count - 1
+            else: 
+                user_art_inter.like = True
+                article.like_count = article.like_count + 1
         
         sql_db.session.commit()
         return generate_response("Success: Like Count Updated", 200)
